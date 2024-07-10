@@ -1,5 +1,5 @@
-// move is in 8, x or 1, o format
-function parseMove(move) {
+// move is in 8, X or 1, O format
+function parseMove(move, board) {
     const move_parts = move.split(",")
     const position = move_parts[0]
     const piece = move_parts[1]
@@ -11,36 +11,59 @@ function parseMove(move) {
     }
 }
 
-function checkWin(){
+function checkWin(board){
     // check each row
     board.forEach(row => {
         if (row[1] === row[0] && row[1] === row[2]){
-            return true
+            return row[0]
         }
     })
 
     // check each col
     for (let col = 0; col < 3; col++){
-        if (board[col][1] === board[col][0] && board[col][1] === board[col][2]) {
-            return true
+        if (board[1][col] === board[0][col] && board[col][1] === board[2][col]) {
+            return board[1][col]
         }
     }
 
     // check the 2 diagonals
-    return ((board[0][0] === board[1][1] && board[2][2] === board[1][1]) ||
-        (board[0][2] === board[1][1] && board[2][2] === board[2][0]))
-
-}
-
-const board = [[null, null, null], [null, null, null], [null, null, null]]
-let game_over = false
-let moves_left = 9
-while (!game_over && moves_left > 0) {
-    let move = prompt("Enter Move")
-    while (!parseMove(move)){
-        move = prompt("Enter Move")
-        parseMove(move)
+    if ((board[0][0] === board[1][1] && board[2][2] === board[1][1]) ||
+        (board[0][2] === board[1][1] && board[2][2] === board[2][0])) {
+        return board[1][1]
     }
-    game_over = checkWin()
-    moves_left--
+
+    return null
 }
+
+function printGameEnd(outcome, moves) {
+    if (outcome) {
+        console.log(`${outcome.toUpperCase()} has won in ${moves} moves!`)
+    } else {
+        console.log("Tie!")
+    }
+}
+
+function runGameEngine(){
+    const board = [[null, null, null], [null, null, null], [null, null, null]]
+    let game_over = false
+    let moves = 0
+    let outcome = null
+
+    while (!game_over && moves < 9) {
+        let move = prompt("Enter Move")
+        while (!parseMove(move, board)){
+            move = prompt("Enter Move")
+            parseMove(move)
+        }
+
+        const outcome = checkWin(board)
+        if (outcome) {
+            game_over = true
+        }
+
+        moves++
+    }
+    printGameEnd(outcome moves)
+}
+
+runGameEngine()
