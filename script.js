@@ -2,7 +2,6 @@
 let board = [[-1, -1, -1], [-1, -1, -1], [-1, -1, -1]]; // -1 for empty, 0 for O, 1 for X
 let curr_player = 0; // 0 for O, 1 for X
 let moves = 0;
-let gameEnded = false;
 
 // Function to generate the game board
 function generateBoard() {
@@ -25,13 +24,14 @@ function handleSquareClick(event) {
     const row = parseInt(square.dataset.row);
     const col = parseInt(square.dataset.col);
 
-    if (board[row][col] === -1 && !gameEnded) {
+    if (board[row][col] === -1) {
         board[row][col] = curr_player;
         updateSquare(square);
+        console.log(board)
         moves++;
-        const playerHasWon = checkWin();
-        if (playerHasWon || moves === 9) {
-            endTheGame(playerHasWon);
+        const player_has_won = checkWin();
+        if (player_has_won || moves === 9) {
+            endTheGame(player_has_won);
         } else {
             curr_player = 1 - curr_player; // Toggle player turn (0 to 1 or 1 to 0)
         }
@@ -72,27 +72,23 @@ function checkWin() {
     }
 
     // Check diagonals
-    if (board[0][0] !== -1 && board[0][0] === board[1][1] && board[0][0] === board[2][2]) {
-        return true; // Top-left to bottom-right diagonal has a winner
-    }
-    if (board[0][2] !== -1 && board[0][2] === board[1][1] && board[0][2] === board[2][0]) {
-        return true; // Top-right to bottom-left diagonal has a winner
-    }
-
-    return false; // No winner
+    return board[1][1] !== -1 &&
+        ((board[0][0] === board[1][1] && board[1][1] === board[2][2]) || (board[0][2] === board[1][1] && board[1][1] === board[2][0]))
 }
 
 // Function to end the game
 function endTheGame(playerHasWon) {
-    gameEnded = true;
+    const outcome = document.querySelector("#outcome")
     if (playerHasWon) {
         const winner = curr_player === 0 ? "O" : "X";
-        console.log(`${winner} has won in ${moves} moves!`);
+        outcome.textContent = `${winner} has won in ${moves} moves!`
     } else {
-        console.log("It's a tie!");
+        outcome.textContent = "It's a tie!"
     }
     removeSquareListeners();
 }
 
 // Start the game
+// todo: button to clear outcome and board then generateBoard()
+// todo: score tracker for both players 
 generateBoard();
