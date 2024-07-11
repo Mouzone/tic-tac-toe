@@ -1,3 +1,16 @@
+function generateBoard() {
+    const board = document.querySelector("#board")
+    for (let row = 0; row < 3; row++){
+        for (let col = 0; col < 3; col++){
+            const square = document.createElement("div")
+            board.appendChild(square)
+            square.classList.add("square")
+            square.dataset.row = `${row}`
+            square.dataset.col = `${col}`
+        }
+    }
+}
+
 // move is in 8,X or 1,O format
 function parseMove(move, board) {
     const move_parts = move.split(" ")
@@ -50,6 +63,7 @@ function runGameEngine(){
     let moves = 0
     let outcome = null
 
+    generateBoard()
     while (!game_over && moves < 9) {
         let move = prompt("Enter Move")
         while (!parseMove(move, board)){
