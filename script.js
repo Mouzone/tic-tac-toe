@@ -11,6 +11,20 @@ function generateBoard() {
     }
 }
 
+function makeSquaresInteractive() {
+    const squares = document.querySelectorAll(".square")
+    squares.forEach(square => {
+        square.addEventListener("click", event => {
+            if (curr_player) {
+                square.textContent = "X"
+            } else {
+                square.textContent = "O"
+            }
+            curr_player = !curr_player
+        })
+    })
+}
+
 // move is in 8,X or 1,O format
 function parseMove(move, board) {
     const move_parts = move.split(" ")
@@ -64,6 +78,7 @@ function runGameEngine(){
     let outcome = null
 
     generateBoard()
+    makeSquaresInteractive()
     while (!game_over && moves < 9) {
         let move = prompt("Enter Move")
         while (!parseMove(move, board)){
@@ -81,4 +96,5 @@ function runGameEngine(){
     printGameEnd(outcome, moves)
 }
 
+let curr_player = 0 // 0 for O and 1 for X
 runGameEngine()
